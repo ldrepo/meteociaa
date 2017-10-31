@@ -7,7 +7,7 @@
 
 #include "apiSD.h"
 
-#include "fatfs_stubs.h"
+//#include "fatfs_stubs.h"
 #include "sapi.h"
 #include "ff.h"
 
@@ -25,7 +25,7 @@ bool_t diskTickHook( void *ptr ){
 /* supongo que el HW esta configurado antes de usar este módulo */
 uint8_t apiSD_Init(void) {
 	/************* FAT MOUNT **************/
-	if( f_mount_( &FileSystem, "", 0 ) != FR_OK ){
+	if( f_mount( &FileSystem, "", 0 ) != FR_OK ){
 		// ERROR
 		return _API_STATE_ERROR;
 	}
@@ -33,13 +33,15 @@ uint8_t apiSD_Init(void) {
 }
 
 uint8_t apiSD_Write(char * strDatalogFilename, char * stringData) {
-	uint32_t bytesWritten;
+	UINT bytesWritten, stringDataLen;
+	/************* CUENTA CARACTERES de LA CADENA **************/
+	for(stringDataLen = 0 ; stringData[stringDataLen]!= '\0'; stringDataLen++);
 
 	/************* FAT WRITE **************/
-	if( f_open_( &File, strDatalogFilename, FA_WRITE | FA_OPEN_APPEND ) == FR_OK ){
-		f_write_(&File, stringData, 50, &bytesWritten );
-		f_close_(&File);
-		if( bytesWritten == 50 ){
+	if( f_open( &File, strDatalogFilename, FA_WRITE | FA_OPEN_APPEND ) == FR_OK ){
+		f_write(&File, stringData, stringDataLen, &bytesWritten );
+		f_close(&File);
+		if( bytesWritten == stringDataLen ){
 			// OK
 			return _API_STATE_OK;
 		}
