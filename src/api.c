@@ -9,6 +9,7 @@
 
 #include "apiSD.h"
 #include "sapi.h"
+#include "dht11.h"
 
 static bool_t enableTemp 	= 1;
 static bool_t enableHum 	= 1;
@@ -17,6 +18,14 @@ static bool_t enableWind 	= 1;
 rtc_t rtc;							/* Estructura RTC */
 
 static void FormatInformationArray(uint16_t valor, uint8_t * destiny, uint8_t pos);
+
+uint8_t apiConfig(void){
+	uartConfig(UART_USB, 115200);
+	adcConfig(ADC_ENABLE);
+	dht11_Init();
+	spiConfig(SPI0);
+	return _API_STATE_OK;
+}
 
 uint8_t apiInit_rtc(void) {
 	rtc_t rtc;				/* Estructura RTC */
@@ -51,15 +60,18 @@ uint8_t apiConfig_SensorWind_Enable(bool_t flagEnable) {
 }
 
 uint8_t apiReadTemperatureHumdity(uint16_t * dataTemp, uint16_t * dataHum) {
-	uint16_t adcValue1, adcValue2;
+	float hum, temp;
+	uint8_t valret;
 
-	adcValue1 = adcRead(CH1); // temp
-	(*dataTemp) = adcValue1;
-
-	adcValue2 = adcRead(CH2); // hum
-	(*dataHum)  = adcValue2;
-
-	return _API_STATE_OK;
+	if(TRUE == dht11_Read(&hum, &temp)){
+		(*dataTemp) = (uint16_t) (temp*10.0f+0.5f);	//Se pasa a deceimas redondeadas
+		(*dataHum)  = (uint16_t) (hum *10.0f+0.5f);	//
+		valret = _API_STATE_OK;
+	}
+	else{
+		valret = _API_STATE_ERROR;
+	}
+	return valret;
 }
 
 uint8_t apiReadWind(uint16_t * dataWind) {
@@ -83,19 +95,21 @@ static void FormatInformationArray(uint16_t valor, uint8_t * destiny, uint8_t po
 	destiny[pos++] = (valor/1000) 		+ '0';
 	destiny[pos++] = (valor%1000)/100 	+ '0';
 	destiny[pos++] = (valor%100)/10 	+ '0';
+	destiny[pos++] = '.';
 	destiny[pos]   = (valor%10) 		+ '0';
 }
 
 uint8_t apiProcessInformation(uint16_t dataTemp, uint16_t dataHum, uint16_t dataWind, uint8_t * destiny) {
 	uint8_t pos;
 	rtc_t rtc;				/* Estructura RTC */
-	bool_t val;
+	//bool_t val;
 
-    val = rtcRead( &rtc );
+    //val = rtcRead( &rtc );
+	rtcRead( &rtc );
 	/*
 	 * Recibir 3 datos enteros X, Y, Z
-	 * posiciones	= 0123 4 5678 9 0123 4 56789012345678901234 5  6
-	 * formato 		= XXXX ; YYYY ; ZZZZ ; 2016/12/10_20:04:36;\r \n \0
+	 * posiciones	= 01234 5 67890 1 23456 7 89012345678901234567 8  9
+	 * formato 		= XXX.X ; YYY.Y ; ZZZ.Z ; 2016/12/10_20:04:36;\r \n \0
 	 * formato 		= XXXX ;  ;  ; \r \n \0
 	 * x;y;z;time-stamp;
 	 * 154;0;-25;2016/12/10_20:04:36;
@@ -103,19 +117,19 @@ uint8_t apiProcessInformation(uint16_t dataTemp, uint16_t dataHum, uint16_t data
 	pos = 0;
 	if(enableTemp) {
 		FormatInformationArray(dataTemp, destiny, pos);
-		pos += 4;
+		pos += 5;
 	}
 	destiny[pos++] = ';';
 
 	if(enableHum) {
 		FormatInformationArray(dataHum, destiny, pos);
-		pos += 4;
+		pos += 5;
 	}
 	destiny[pos++] = ';';
 
 	if(enableWind) {
 		FormatInformationArray(dataWind, destiny, pos);
-		pos += 4;
+		pos += 5;
 	}
 	destiny[pos++] = ';';
 	//Formato de fecha: 2016/12/10_20:04:36;

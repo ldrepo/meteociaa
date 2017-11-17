@@ -10,7 +10,7 @@ CONSOLE_PRINT_ENABLE
 
 /* Configuración de mi aplicación */
 #define _SYS_CFG_DATALOG_FILENAME 		"datalog.txt"
-#define _SYS_CFG_SAMPLINGTIME			(1000)
+#define _SYS_CFG_SAMPLINGTIME			(2000)
 #define _SYS_CFG_SENSOR_ENABLE_TEMP		(1)
 #define _SYS_CFG_SENSOR_ENABLE_HUM		(1)
 #define _SYS_CFG_SENSOR_ENABLE_WIND		(1)
@@ -29,18 +29,19 @@ uint8_t appCofiguraPeriodoMuestreo	(void);
 
 /************* APLICACION **************/
 int main( void ){
+	delay_t delayEstacion;
 
 	boardConfig();
-	uartConfig(UART_USB, 115200);
-	adcConfig(ADC_ENABLE);
-	spiConfig(SPI0);
+	apiConfig();
 	tickConfig(10, diskTickHook);
 
 	appConfiguracion();
+	delayConfig(&delayEstacion,tiempoMuestreo);
 
 	while(TRUE) {
-		delay(tiempoMuestreo);
-		appEstacionMeterorologica();
+		if( delayRead( &delayEstacion )){
+			appEstacionMeterorologica();
+		}
 	}
 
 	return 0;
@@ -149,11 +150,11 @@ uint8_t appCofiguraPeriodoMuestreo(void){
 	uint8_t inString[L_STRING_IN];
 	tick_t valIngresado = _SYS_CFG_SAMPLINGTIME;
 
-	consolePrintString("\n\rIngrese período de muestreo [de 1 a 3600 segundos]: ");
+	consolePrintString("\n\rIngrese período de muestreo [de 2 a 3600 segundos]: ");
 	uartReadString( UART_USB, inString, L_STRING_IN );	//Lee cadena de la UART
 	valIngresado = atoi((const char *)inString);		//Convierte a entero
 
-	if(valIngresado < 1){ valIngresado = 1; }			//Satura el valor leido
+	if(valIngresado < 2){ valIngresado = 2; }			//Satura el valor leido
 	else if(valIngresado > 3600){ valIngresado = 3600; }
 
 	valIngresado *= 1000;								//Pasa a milisegundos
