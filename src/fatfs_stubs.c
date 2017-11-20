@@ -74,7 +74,7 @@ uint32_t    f_mount_ ( FATFS *fileSystem, 	char * alternativeText, uint32_t moun
     uartWriteString(UART_SD_EMULATED, "\n\r[DEB]Montando el file system.\n\r");
     return FR_OK;
 #else
-    return f_mount( &fileSystem, "", 0 );
+    return f_mount( fileSystem, "", 0 );
 #endif
 }
 
@@ -96,7 +96,7 @@ uint8_t counter;
 
 	return FR_OK;
 #else
-	return f_open( &file, fileName, openParameters);
+	return f_open( file, fileName, openParameters);
 #endif
 
 }
@@ -111,7 +111,7 @@ void        f_write_ ( FIL   *file, 		char * messageToWrite, 	uint32_t bytesToWr
 	        uartWriteByte(UART_SD_EMULATED, *messagePointer);
 	    }
 #else
-	    f_write( &file, messageToWrite, bytesToWrite, bytesWritten );
+	    f_write( file, messageToWrite, bytesToWrite, bytesWritten );
 #endif
 }
 

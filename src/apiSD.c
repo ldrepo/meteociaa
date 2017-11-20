@@ -25,7 +25,7 @@ bool_t diskTickHook( void *ptr ){
 /* supongo que el HW esta configurado antes de usar este módulo */
 uint8_t apiSD_Init(void) {
 	/************* FAT MOUNT **************/
-	if( f_mount_( &FileSystem, "", 0 ) != FR_OK ){
+	if( f_mount( &FileSystem, "", 0 ) != FR_OK ){
 		// ERROR
 		return _API_STATE_ERROR;
 	}
@@ -38,9 +38,9 @@ uint8_t apiSD_Write(char * strDatalogFilename, char * stringData) {
 	for(stringDataLen = 0 ; stringData[stringDataLen]!= '\0'; stringDataLen++);
 
 	/************* FAT WRITE **************/
-	if( f_open_( &File, strDatalogFilename, FA_WRITE | FA_OPEN_APPEND ) == FR_OK ){
-		f_write_(&File, stringData, stringDataLen, &bytesWritten );
-		f_close_(&File);
+	if( f_open( &File, strDatalogFilename, FA_WRITE | FA_OPEN_APPEND ) == FR_OK ){
+		f_write(&File, stringData, stringDataLen, &bytesWritten );
+		f_close(&File);
 		if( bytesWritten == stringDataLen ){
 			// OK
 			return _API_STATE_OK;

@@ -99,6 +99,50 @@ static void FormatInformationArray(uint16_t valor, uint8_t * destiny, uint8_t po
 	destiny[pos]   = (valor%10) 		+ '0';
 }
 
+uint8_t apiValToStr(uint16_t valor, uint8_t * destiny){
+	FormatInformationArray(valor, destiny, 0);
+	destiny[5]='\0';
+	return _API_STATE_OK;
+}
+
+uint8_t apiRTCToStr(uint8_t * destiny){
+	rtc_t rtc;				/* Estructura RTC */
+
+	rtcRead( &rtc );
+	destiny[0] = (rtc.year/1000) + '0';
+	destiny[1] = ((rtc.year%1000)/100) + '0';
+	destiny[2] = ((rtc.year%100)/10) + '0';
+	destiny[3] = (rtc.year%10) + '0';
+
+	destiny[4] = (rtc.month/10) + '0';
+	destiny[5] = (rtc.month%10) + '0';
+
+	destiny[6] = (rtc.mday/10) + '0';
+	destiny[7] = (rtc.mday%10) + '0';
+	destiny[8] = '_';
+	destiny[9] = (rtc.hour/10) + '0';
+	destiny[10] = (rtc.hour%10) + '0';
+	destiny[11] = ':';
+	destiny[12] = (rtc.min/10) + '0';
+	destiny[13] = (rtc.min%10) + '0';
+	destiny[14] = ':';
+	destiny[15] = (rtc.sec/10) + '0';
+	destiny[16] = (rtc.sec%10) + '0';
+	destiny[17]   = '\0';
+
+	return _API_STATE_OK;
+}
+
+int apiSaturaEntero(int dato, int limInf, int limSup){
+	if(dato < limInf){
+		dato = limInf;
+	}
+	else if(dato > limSup){
+		dato = limInf;
+	}
+	return dato;
+}
+
 uint8_t apiProcessInformation(uint16_t dataTemp, uint16_t dataHum, uint16_t dataWind, uint8_t * destiny) {
 	uint8_t pos;
 	rtc_t rtc;				/* Estructura RTC */

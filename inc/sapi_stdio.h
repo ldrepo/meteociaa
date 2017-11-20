@@ -1,7 +1,7 @@
-/* Copyright 2016, Pablo Ridolfi
+/* Copyright 2017, Agustin Bassi.
  * All rights reserved.
  *
- * This file is part of Workspace.
+ * This file is part sAPI library for microcontrollers.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,16 +31,14 @@
  *
  */
 
-#ifndef _MAIN_H_
-#define _MAIN_H_
+/* Date: 2017-30-10 */
+
+#ifndef _SAPI_STDIO_H_
+#define _SAPI_STDIO_H_
 
 /*==================[inclusions]=============================================*/
 
-/*==================[cplusplus]==============================================*/
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "sapi.h"
 
 /*==================[macros]=================================================*/
 
@@ -50,14 +48,12 @@ extern "C" {
 
 /*==================[external functions declaration]=========================*/
 
-void 	disk_timerproc	(void);
-int 	main			(void);
+bool_t stdioConfig  (uartMap_t uartPrintf);
 
-/*==================[cplusplus]==============================================*/
+int    stdioPrintf  (uartMap_t uartPrintf, const char *format, ...);
 
-#ifdef __cplusplus
-}
-#endif
+int    stdioSprintf (char *out, const char *format, ...);
 
 /*==================[end of file]============================================*/
-#endif /* #ifndef _MAIN_H_ */
+
+#endif /* #ifndef _SAPI_STDIO_H_ */
