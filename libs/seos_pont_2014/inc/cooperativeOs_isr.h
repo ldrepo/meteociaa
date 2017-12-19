@@ -1,4 +1,5 @@
-/* Copyright 2017, Agustin Bassi.
+/* Copyright 2013, Michael J. Pont.
+ * Copyright 2016, Eric Pernia.
  * All rights reserved.
  *
  * This file is part sAPI library for microcontrollers.
@@ -31,14 +32,20 @@
  *
  */
 
-/* Date: 2017-30-10 */
+/* Date: 2016-08-16 */
 
-#ifndef _SAPI_STDIO_H_
-#define _SAPI_STDIO_H_
+#ifndef _COOPERATIVE_OS_ISR_H_
+#define _COOPERATIVE_OS_ISR_H_
 
 /*==================[inclusions]=============================================*/
 
-#include "sapi.h"
+#include "sapi.h"   // <= sAPI header
+
+/*==================[cplusplus]==============================================*/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*==================[macros]=================================================*/
 
@@ -48,12 +55,21 @@
 
 /*==================[external functions declaration]=========================*/
 
-bool_t stdioConfig  (uartMap_t uartPrintf);
+// FUNCION que inicializa el planificador de tareas.
+void schedulerInit( void );
 
-int    stdioPrintf  (uartMap_t uartPrintf, const char *format, ...);
+// FUNCION que inicializa la interrupcion que ejecuta el planificador de
+// tareas.
+void schedulerStart( tick_t );
 
-int    stdioSprintf (char *out, const char *format, ...);
+// FUNCION que contiene el planificador de tareas.
+bool_t schedulerUpdate( void *ptr );
+
+/*==================[cplusplus]==============================================*/
+
+#ifdef __cplusplus
+}
+#endif
 
 /*==================[end of file]============================================*/
-
-#endif /* #ifndef _SAPI_STDIO_H_ */
+#endif /* #ifndef _COOPERATIVE_OS_ISR_H_ */

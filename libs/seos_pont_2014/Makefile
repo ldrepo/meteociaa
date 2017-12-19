@@ -30,25 +30,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# application name
-PROJECT_NAME := $(notdir $(PROJECT))
-#                   $(PROJECT)/sapiex/lcd
-# Modules needed by the application
-PROJECT_MODULES := $(PROJECT)/libs/seos_pont_2014 \
-                   modules/$(TARGET)/fatfs_ssp \
-                   modules/$(TARGET)/sapi \
-                   modules/$(TARGET)/base \
-                   modules/$(TARGET)/board \
-                   modules/$(TARGET)/chip
-                   
-#                   $(PROJECT)/sapiex/lcd
+seos_pont_2014_PATH := $(PROJECT)/libs/seos_pont_2014
 
-# source files folder
-PROJECT_SRC_FOLDERS := $(PROJECT)/src
+seos_pont_2014_SRC_FILES += $(wildcard $(seos_pont_2014_PATH)/src/*.c)
 
-# header files folder
-PROJECT_INC_FOLDERS := $(PROJECT)/inc
+seos_pont_2014_SRC_FOLDERS += $(PROJECT)/libs/seos_pont_2014/src
 
-# source files
-PROJECT_C_FILES := $(wildcard $(PROJECT)/src/*.c)
-PROJECT_ASM_FILES := $(wildcard $(PROJECT)/src/*.S)
+seos_pont_2014_INC_FOLDERS += $(PROJECT)/libs/seos_pont_2014/inc

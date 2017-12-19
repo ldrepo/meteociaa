@@ -1,28 +1,44 @@
-/*
- * api.h
- *
- *  Created on: Oct 25, 2017
- *      Author: seb
- */
+/*============================================================================
+ * Licencia: 
+ * Autor: 
+ * Fecha: 
+ *===========================================================================*/
 
-#ifndef API_H_
-#define API_H_
+#ifndef _API2_H_
+#define _API2_H_
 
-#include "apiSD.h"
+/*==================[inclusiones]============================================*/
+
 #include "sapi.h"
-#include "sapi_spi.h"
 
-uint8_t apiReadTemperatureHumdity		(uint16_t * dataTemp, uint16_t * dataHum);
-uint8_t apiReadWind						(uint16_t * dataWind);
-uint8_t apiReadSensor					(uint16_t * dataTemp, uint16_t * dataHum, uint16_t * dataWind);
-uint8_t apiValToStr						(uint16_t valor, uint8_t * destiny);
-uint8_t apiRTCToStr						(uint8_t * destiny);
-int 	apiSaturaEntero					(int dato, int limInf, int limSup);
-uint8_t apiProcessInformation			(uint16_t dataTemp, uint16_t dataHum, uint16_t dataWind, uint8_t * destiny);
-uint8_t apiWriteSD						(char * filename, uint8_t * stringData);
-uint8_t apiInit_rtc						(void);
-uint8_t apiConfig_SensorTemp_Enable		(bool_t flagEnable);
-uint8_t apiConfig_SensorHum_Enable		(bool_t flagEnable);
-uint8_t apiConfig_SensorWind_Enable		(bool_t flagEnable);
-uint8_t apiConfig						(void);
-#endif /* API_H_ */
+/*==================[c++]====================================================*/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*==================[macros]=================================================*/
+
+/*==================[tipos de datos declarados por el usuario]===============*/
+
+/*==================[declaraciones de datos externos]========================*/
+
+/*==================[declaraciones de funciones externas]====================*/
+uint8_t apiConfigHardware			(void);
+uint8_t apiConfiguracion			(void);
+uint8_t apiReadSensor				(void);
+uint8_t apiEnviarDatosASd			(void);
+uint8_t apiEnviarDatosAUart			(void);
+uint8_t apiValoresToStr				(char * strRTCValue,char * strTempValue,char * strHumValue,char * strWindValue);
+uint8_t apiEscribirSensoresLcd		(void);
+uint8_t apiMostrarTemperaturaEnLed	(void);
+uint8_t apiEscribirSensoresWifi		(void);
+uint8_t apiEscribirSensoresBluetooth(void);
+
+/*==================[c++]====================================================*/
+#ifdef __cplusplus
+}
+#endif
+
+/*==================[end of file]============================================*/
+#endif /* _API2_H_ */
